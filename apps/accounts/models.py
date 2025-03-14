@@ -21,8 +21,12 @@ class User(AbstractBaseUser, IsDeletedModel):
         email (str): Адрес электронной почты пользователя,
         используемый в качестве поля имени пользователя.
         avatar (ImageField): Аватар пользователя.
-        is_staff (bool): пределяет, может ли пользователь войти на этот сайт администратора.
-        is_active (bool): Указывает, следует ли считать данного пользователя активным.
+        is_staff (bool): пределяет, может ли пользователь
+        войти на этот сайт администратора.
+
+        is_active (bool): Указывает, следует ли считать
+        данного пользователя активным.
+
         account_type (str): Тип аккаунта (SELLER or BUYER).
 
     Methods:
@@ -31,14 +35,18 @@ class User(AbstractBaseUser, IsDeletedModel):
 
     """
 
-    first_name = models.CharField(verbose_name="First name", max_length=25, null=True)
-    last_name = models.CharField(verbose_name="Last name", max_length=25, null=True)
+    first_name = models.CharField(
+        verbose_name="First name", max_length=25, null=True)
+    last_name = models.CharField(
+        verbose_name="Last name", max_length=25, null=True)
     email = models.EmailField(verbose_name="Email address", unique=True)
-    avatar = models.ImageField(upload_to="avatars/", null=True, default='avatars/default.jpg')
+    avatar = models.ImageField(
+        upload_to="avatars/", null=True, default='avatars/default.jpg')
 
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    account_type = models.CharField(max_length=6, choices=ACCOUNT_TYPE_CHOICES, default="BUYER")
+    account_type = models.CharField(
+        max_length=6, choices=ACCOUNT_TYPE_CHOICES, default="BUYER")
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["first_name", "last_name"]

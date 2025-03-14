@@ -6,12 +6,14 @@ from apps.common.models import BaseModel
 
 
 class Seller(BaseModel):
-    # Link to the User model
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='seller')
+    # Связь с юзером
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, related_name='seller')
 
     # Информация о магазине(бизнесе)
     business_name = models.CharField(max_length=255)
-    slug = AutoSlugField(populate_from="business_name", always_update=True, null=True)
+    slug = AutoSlugField(
+        populate_from="business_name", always_update=True, null=True)
     inn_identification_number = models.CharField(max_length=50)
     website_url = models.URLField(null=True, blank=True)
     phone_number = models.CharField(max_length=20)

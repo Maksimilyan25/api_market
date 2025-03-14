@@ -31,36 +31,37 @@ class Category(BaseModel):
 
 class Product(IsDeletedModel):
     """
-    Represents a product listed for sale.
+    Поля для продукта.
 
-    Attributes:
-        seller (ForeignKey): The user who is selling the product.
-        name (str): The name of the product.
-        slug (str): The slug generated from the name, used in URLs.
-        desc (str): A description of the product.
-        price_old (Decimal): The original price of the product.
-        price_current (Decimal): The current price of the product.
-        category (ForeignKey): The category to which the product belongs.
-        in_stock (int): The quantity of the product in stock.
-        image1 (ImageField): The first image of the product.
-        image2 (ImageField): The second image of the product.
-        image3 (ImageField): The third image of the product.
+    Атрибуты:
+    seller (ForeignKey): Пользователь, продающий продукт.
+    name (str): Название продукта.
+    slug (str): Слаг, сгенерированный из названия, используемый в URL-адресах.
+    desc (str): Описание продукта.
+    price_old (Decimal): Первоначальная цена продукта.
+    price_current (Decimal): Текущая цена продукта.
+    category (ForeignKey): Категория, к которой принадлежит продукт.
+    in_stock (int): Количество продукта на складе.
+    image1 (ImageField): Первое изображение продукта.
+    image2 (ImageField): Второе изображение продукта.
+    image3 (ImageField): Третье изображение продукта.
     """
 
-    seller = models.ForeignKey(Seller, on_delete=models.SET_NULL, related_name="products", null=True)
+    seller = models.ForeignKey(
+        Seller, on_delete=models.SET_NULL, related_name='products', null=True)
     name = models.CharField(max_length=100)
     slug = AutoSlugField(populate_from="name", db_index=True)
     desc = models.TextField()
     price_old = models.DecimalField(max_digits=10, decimal_places=2, null=True)
     price_current = models.DecimalField(max_digits=10, decimal_places=2)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="products")
+    category = models.ForeignKey(
+        Category, on_delete=models.CASCADE, related_name='products')
     in_stock = models.IntegerField(default=5)
 
     # Only 3 images are allowed
     image1 = models.ImageField(upload_to='product_images/')
     image2 = models.ImageField(upload_to='product_images/', blank=True)
     image3 = models.ImageField(upload_to='product_images/', blank=True)
-
 
     def __str__(self):
         return str(self.name)
