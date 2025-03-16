@@ -1,7 +1,13 @@
 from drf_spectacular.utils import extend_schema
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from django.db.models import Avg
 
+from apps.common.paginations import CustomPagination
+from apps.shop.schema_examples import PRODUCT_PARAM_EXAMPLE
+from apps.reviews.models import Review
+from apps.shop.filters import ProductFilter
 from apps.sellers.models import Seller
 from apps.shop.models import Category, Product
 from apps.profiles.models import OrderItem, ShippingAddress, Order
@@ -71,20 +77,29 @@ class ProductsByCategoryView(APIView):
 
 class ProductsView(APIView):
     serializer_class = ProductSerializer
+    pagination_class = CustomPagination
 
     @extend_schema(
-        operation_id="all_products",
+        operation_id='all_products',
         summary='Все продукты магазина',
         description="""
             Эндпоинт возвращает все продукты магазина.
         """,
-        tags=tags
+        tags=tags,
+        parameters=PRODUCT_PARAM_EXAMPLE,
     )
     def get(self, request, *args, **kwargs):
         products = Product.objects.select_related(
             'category', 'seller', 'seller__user').all()
-        serializer = self.serializer_class(products, many=True)
-        return Response(data=serializer.data, status=200)
+        filterset = ProductFilter(request.GET, queryset=products)
+        if filterset.is_valid():
+            queryset = filterset.qs
+            paginator = self.pagination_class()
+            paginated_queryset = paginator.paginate_queryset(queryset, request)
+            serializer = self.serializer_class(paginated_queryset, many=True)
+            return paginator.get_paginated_response(serializer.data)
+        else:
+            return Response(filterset.errors, status=400)
 
 
 class ProductsBySellerView(APIView):
@@ -127,12 +142,17 @@ class ProductView(APIView):
         product = self.get_object(kwargs['slug'])
         if not product:
             return Response(data={'message': 'Продукт не найден!'}, status=404)
+        avg_rating = Review.objects.filter(
+            product=product).aggregate(Avg('rating'))['rating__avg']
         serializer = self.serializer_class(product)
+        response_data = serializer.data
+        response_data['average_rating'] = avg_rating or 0
         return Response(data=serializer.data, status=200)
 
 
 class CartView(APIView):
     serializer_class = OrderItemSerializer
+    permission_classes = (IsAuthenticated,)
 
     @extend_schema(
         summary='Товары в корзине',
@@ -197,6 +217,7 @@ class CartView(APIView):
 
 class CheckoutView(APIView):
     serializer_class = CheckoutSerializer
+    permission_classes = (IsAuthenticated,)
 
     @extend_schema(
         summary='Проверка',

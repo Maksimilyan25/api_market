@@ -19,6 +19,7 @@ class SellerShopSerializer(serializers.Serializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
+    average_rating = serializers.FloatField(read_only=True)
 
     class Meta:
         model = Product

@@ -2,6 +2,7 @@ from drf_spectacular.utils import extend_schema
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from apps.common.permissions import IsOwner
 from apps.profiles.models import ShippingAddress, Order, OrderItem
 from apps.profiles.serializers import (
     ProfileSerializer, ShippingAddressSerializer)
@@ -9,14 +10,15 @@ from apps.common.utils import set_dict_attr
 from apps.shop.serializers import OrderSerializer, CheckItemOrderSerializer
 
 
-tags = ["Profiles"]
+tags = ['Profiles']
 
 
 class ProfileView(APIView):
     serializer_class = ProfileSerializer
+    permission_classes = [IsOwner]
 
     @extend_schema(
-        summary="Получение профиля",
+        summary='Получение профиля',
         description="""
             Эта конечная точка позволяет пользователю получить свой профиль.
         """,
@@ -28,7 +30,7 @@ class ProfileView(APIView):
         return Response(data=serializer.data, status=200)
 
     @extend_schema(
-        summary="Обновление профиля",
+        summary='Обновление профиля',
         description="""
             Эта конечная точка позволяет юзеру редактировать свой профиль.
         """,
@@ -44,7 +46,7 @@ class ProfileView(APIView):
         return Response(data=serializer.data)
 
     @extend_schema(
-        summary="Отключение профиля",
+        summary='Отключение профиля',
         description="""
             Эта конечная точка позволяет пользователю отключить свой профиль.
         """,
@@ -59,6 +61,7 @@ class ProfileView(APIView):
 
 class ShippingAddressesView(APIView):
     serializer_class = ShippingAddressSerializer
+    permission_classes = [IsOwner]
 
     @extend_schema(
         summary='Получение адреса доставки',
@@ -95,10 +98,12 @@ class ShippingAddressesView(APIView):
 
 class ShippingAddressViewID(APIView):
     serializer_class = ShippingAddressSerializer
+    permission_classes = (IsOwner,)
 
     def get_object(self, user, shipping_id):
-        shipping_address = ShippingAddress.objects.get_or_none(
-            user=user, id=shipping_id)
+        shipping_address = ShippingAddress.objects.get_or_none(id=shipping_id)
+        if shipping_address is not None:
+            self.check_object_permissions(self.request, shipping_address)
         return shipping_address
 
     @extend_schema(
@@ -159,6 +164,7 @@ class ShippingAddressViewID(APIView):
 
 class OrdersView(APIView):
     serializer_class = OrderSerializer
+    permission_classes = (IsOwner,)
 
     @extend_schema(
         operation_id="orders_view",
@@ -179,6 +185,7 @@ class OrdersView(APIView):
 
 class OrderItemView(APIView):
     serializer_class = CheckItemOrderSerializer
+    permission_classes = (IsOwner,)
 
     @extend_schema(
         operation_id='orders_items_view',

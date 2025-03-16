@@ -6,19 +6,19 @@ from apps.shop.models import Product
 
 
 DELIVERY_STATUS_CHOICES = (
-    ("PENDING", "PENDING"),
-    ("PACKING", "PACKING"),
-    ("SHIPPING", "SHIPPING"),
-    ("ARRIVING", "ARRIVING"),
-    ("SUCCESS", "SUCCESS"),
+    ('ОЖИДАНИЕ', 'ОЖИДАНИЕ'),  # PENDING
+    ('УПАКОВКА', 'УПАКОВКА'),  # PACKING
+    ('ОТГРУЗКА', 'ОТГРУЗКА'),  # SHIPPING
+    ('ПРИБЫТИЕ', 'ПРИБЫТИЕ'),  # ARRIVING
+    ('УСПЕХ', 'УСПЕХ'),        # SUCCESS
 )
 
 PAYMENT_STATUS_CHOICES = (
-    ("PENDING", "PENDING"),
-    ("PROCESSING", "PROCESSING"),
-    ("SUCCESSFUL", "SUCCESSFUL"),
-    ("CANCELLED", "CANCELLED"),
-    ("FAILED", "FAILED"),
+    ('ОЖИДАНИЕ', 'ОЖИДАНИЕ'),     # PENDING
+    ('ОБРАБОТКА', 'ОБРАБОТКА'),   # PROCESSING
+    ('УСПЕШНО', 'УСПЕШНО'),       # SUCCESSFUL
+    ('ОТМЕНЕНА', 'ОТМЕНЕНА'),     # CANCELLED
+    ('НЕУДАЧНАЯ', 'НЕУДАЧНАЯ'),   # FAILED
 )
 
 

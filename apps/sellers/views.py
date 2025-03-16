@@ -2,6 +2,7 @@ from drf_spectacular.utils import extend_schema
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from apps.common.permissions import IsSeller
 from apps.common.utils import set_dict_attr
 from apps.shop.models import Category, Product
 from apps.profiles.models import Order, OrderItem
@@ -42,6 +43,7 @@ class SellersView(APIView):
 
 class ProductsBySellerView(APIView):
     serializer_class = ProductSerializer
+    permission_classes = (IsSeller,)
 
     @extend_schema(
         summary='Продавец продуктов.',
@@ -94,6 +96,7 @@ class ProductsBySellerView(APIView):
 
 class SellerProductView(APIView):
     serializer_class = CreateProductSerializer
+    permission_classes = (IsSeller,)
 
     def get_object(self, slug):
         get_slug = Product.objects.get(slug=slug)
@@ -152,12 +155,13 @@ class SellerProductView(APIView):
 
 class SellerOrdersView(APIView):
     serializer_class = OrderSerializer
+    permission_classes = (IsSeller,)
 
     @extend_schema(
-        operation_id="seller_orders",
-        summary="Seller Orders Fetch",
+        operation_id='seller_orders',
+        summary='Заказы продавца',
         description="""
-            This endpoint returns all orders for a particular seller.
+            Эндпоинт возвращает все заказы для определенного продавца.
         """,
         tags=tags
     )
@@ -173,12 +177,13 @@ class SellerOrdersView(APIView):
 
 class SellerOrderItemView(APIView):
     serializer_class = CheckItemOrderSerializer
+    permission_classes = (IsSeller,)
 
     @extend_schema(
-        operation_id="seller_orders_items_view",
-        summary="Seller Item Orders Fetch",
+        operation_id='seller_orders_items_view',
+        summary='Получение заказов продавца',
         description="""
-            This endpoint returns all items orders for a particular seller.
+        Эндпоинт возвращает все заказы на товары для определенного продавца.
         """,
         tags=tags,
 
