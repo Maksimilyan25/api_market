@@ -18,9 +18,15 @@
 
 Для установки проекта выполните следующие шаги:
 
-1. Клонируйте репозиторий: git@github.com:Maksimilyan25/api_market.git
-2. Cоздать виртуальное окружение: python -m venv venv
-3. Активировать виртуальное окружение: source venv/Scripts/activate
-4. Установить зависимости из файла requirements.txt: pip install -r requirements.txt
-5. Выполнить миграции: python manage.py migrate
-6. Запустить проект: python manage.py runserver
+1. Клонируйте репозиторий:
+   git@github.com:Maksimilyan25/api_market.git
+3. Cоздать виртуальное окружение:
+   python -m venv venv
+5. Активировать виртуальное окружение:
+   source venv/Scripts/activate
+7. Установить зависимости из файла requirements.txt:
+   pip install -r requirements.txt
+9. Выполнить миграции:
+    python manage.py migrate
+11. Запустить проект:
+    python manage.py runserver
